@@ -107,7 +107,7 @@
 }
 
 - (void)shineAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    if (self.isFadedOut) {
+//    if (self.isFadedOut) {
         if (animated) {
             if (!self.isShining) {
                 self.completion = completion;
@@ -126,7 +126,7 @@
                 completion();
             }
         }
-    }
+//    }
 }
 
 - (void)fadeOut
@@ -191,6 +191,10 @@
                                        usingBlock:^(id value, NSRange range, BOOL *stop) {
 
             CGFloat currentAlpha = CGColorGetAlpha([(UIColor *)value CGColor]);
+            UIColor *currentColor = (UIColor *)value;
+            if (currentColor == NULL) {
+                currentColor = self.textColor;
+            }
             BOOL shouldUpdateAlpha = (self.isFadedOut && currentAlpha > 0) || (!self.isFadedOut && currentAlpha < 1) || (now - self.beginTime) >= [self.characterAnimationDelays[i] floatValue];
 
             if (!shouldUpdateAlpha) {
@@ -201,7 +205,7 @@
             if (self.isFadedOut) {
                 percentage = 1 - percentage;
             }
-            UIColor *color = [self.textColor colorWithAlphaComponent:percentage];
+            UIColor *color = [currentColor colorWithAlphaComponent:percentage];
             [self.attributedString addAttribute:NSForegroundColorAttributeName value:color range:range];
         }];
     }
@@ -225,8 +229,6 @@
 - (NSMutableAttributedString *)initialAttributedStringFromAttributedString:(NSAttributedString *)attributedString
 {
     NSMutableAttributedString *mutableAttributedString = [attributedString mutableCopy];
-    UIColor *color = [self.textColor colorWithAlphaComponent:0];
-    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:color range:NSMakeRange(0, mutableAttributedString.length)];
     return mutableAttributedString;
 }
 
